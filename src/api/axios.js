@@ -20,6 +20,8 @@ const categoryAPI = {
                 'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
             }
         }),
+    delete: (id) => axi.delete(`/category/${id}`),
+
 }
 
 const productAPI = {
@@ -28,10 +30,20 @@ const productAPI = {
         formData,
         {
             headers: {
-                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+                'Content-Type': `application/json`
             }
         }),
     update: (id, formData) => axi.put(`/product/${id}`,
+        formData,
+        {
+            headers: {
+                'Content-Type': `application/json`
+            }
+        }),
+}
+
+const productDetailAPI = {
+    update: (id, formData) => axi.put(`/productDetail/${id}`,
         formData,
         {
             headers: {
@@ -55,4 +67,4 @@ const userAPI = {
 }
 
 
-export { categoryAPI, productAPI, trademarkAPI, userAPI };
+export { categoryAPI, productAPI, trademarkAPI, userAPI, productDetailAPI };

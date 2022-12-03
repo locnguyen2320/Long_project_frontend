@@ -17,6 +17,9 @@ import UpdateProductModal from "../UpdateModal/UpdateProductModal";
 import { useEffect } from "react";
 import Loading from "../Loading/Loading";
 import axios from "axios";
+import { numberWithCommas } from "../../utils/FormatPrice";
+import { Dropdown } from "react-bootstrap";
+import ProductDetailModal from "../DetailsModal/ProductDetailModal";
 
 
 export default function ProductTable() {
@@ -25,8 +28,9 @@ export default function ProductTable() {
 
   const [isShowCreateForm, setIsShowCreateForm] = useState(false)
   const [isShowUpdateForm, setIsShowUpdateForm] = useState(false)
+  const [isShowDetailModal, setIsShowDetailModal] = useState(false)
 
-  const [updatingProduct, setUpdatingProduct] = useState({ name: "", img: null })
+  const [clickedElement, setClickedElement] = useState(null)
 
   const [errorCreatingMessage, setErrorCreatingMessage] = useState(null)
   const [errorUpdatingMessage, setErrorUpdatingMessage] = useState(null)
@@ -73,8 +77,8 @@ export default function ProductTable() {
     setIsLoading(true)
     try {
       const formData = new FormData(form)
-      const res = await productAPI.update(updatingProduct._id, formData)
-      const newProducts = products.filter(cate => cate._id !== updatingProduct._id)
+      const res = await productAPI.update(clickedElement._id, formData)
+      const newProducts = products.filter(p => p._id !== clickedElement._id)
       newProducts.push(res.data)
       setProducts(newProducts)
     } catch (error) {
@@ -87,6 +91,24 @@ export default function ProductTable() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  function handleUpdatingProductDetail(updatedProductDetail) {
+    const newProducts = products.map(
+      p => {
+        const oldProductDetailsLength = p.r_productDetails.length
+        if (oldProductDetailsLength <= 0)
+          return p
+        const filterProductDetails = p.r_productDetails.filter(detail => detail._id !== updatedProductDetail._id)
+        if (filterProductDetails.length <= oldProductDetailsLength) {
+          filterProductDetails.unshift(updatedProductDetail)
+          const updatedProduct = { ...p, r_productDetails: filterProductDetails }
+          setClickedElement(updatedProduct)
+          return updatedProduct
+        }
+        return p
+      })
+    setProducts(newProducts)
   }
 
   return (
@@ -112,10 +134,11 @@ export default function ProductTable() {
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Image</TableCell>
-                  <TableCell align="left">Description</TableCell>
+                  <TableCell align="left">Price</TableCell>
+                  <TableCell align="left">description</TableCell>
                   <TableCell align="left">Category</TableCell>
                   <TableCell align="left">Trademark</TableCell>
+                  <TableCell align="left">Color-Size</TableCell>
                   <TableCell align="left"></TableCell>
                 </TableRow>
               </TableHead>
@@ -130,14 +153,34 @@ export default function ProductTable() {
                       {product._id}
                     </TableCell>
                     <TableCell align="left">{product.name}</TableCell>
-                    <TableCell align="left"><img className="Table__img" src={`${window.env.CLOUDINARY_URL}${product.img}`} alt={`product`} /></TableCell>
-                    <TableCell align="left">{product.r_category}</TableCell>
-                    <TableCell align="left">{product.r_trdemark}</TableCell>
+                    <TableCell align="left">{numberWithCommas(product.price)}</TableCell>
+                    <TableCell align="left">{product.name}</TableCell>
+                    <TableCell align="left">{product.r_category.name}</TableCell>
+                    <TableCell align="left">{product.r_trademark.name}</TableCell>
+                    <TableCell align="left">
+                      {
+                        <Dropdown>
+                          <Dropdown.Toggle variant="success" id="dropdown-basic">
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            {
+                              product.r_productDetails.map(detail => (
+                                <Dropdown.Item key={detail._id}>{`${detail.color}-${detail.size}`}</Dropdown.Item>
+                              ))
+                            }
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      }
+                    </TableCell>
                     <TableCell align="left" className="Details">
                       <DetailsDropdown
-                        clickedProduct={product}
-                        setUpdatingProduct={(updatingProduct) => {
-                          setUpdatingProduct(updatingProduct)
+                        clickedElement={product}
+                        onDetailClick={(product) => {
+                          setClickedElement(product)
+                          setIsShowDetailModal(true)
+                        }}
+                        setUpdatingElement={(updatingProduct) => {
+                          setClickedElement(updatingProduct)
                           setIsShowUpdateForm(true)
                         }}
                       />
@@ -159,8 +202,14 @@ export default function ProductTable() {
           isShow={isShowUpdateForm}
           onClose={() => { setIsShowUpdateForm(false) }}
           onUpdateProduct={handleUpdateProduct}
-          updatingProduct={updatingProduct}
+          updatingProduct={clickedElement}
           errorMessage={errorUpdatingMessage}
+        />
+        <ProductDetailModal
+          onUpdatingProductDetail={handleUpdatingProductDetail}
+          isShow={isShowDetailModal}
+          product={clickedElement}
+          onClose={() => { setIsShowDetailModal(false) }}
         />
       </>
   );

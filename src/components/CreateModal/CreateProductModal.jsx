@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { Alert } from '@mui/material';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { categoryAPI, trademarkAPI } from '../../api/axios';
+import axios from 'axios';
 
 
 CreateProductModal.propTypes = {
@@ -11,7 +15,41 @@ CreateProductModal.propTypes = {
 };
 
 function CreateProductModal(props) {
+    const [categories, setCategories] = useState([])
+    const [trademarks, setTrademarks] = useState([])
+
     const { isShow, onClose, onCreateProduct, errorMessage } = props
+
+    useEffect(() => {
+        async function getCategories() {
+            try {
+                const res = await categoryAPI.getAll()
+                setCategories(res.data)
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    alert(error.response.data.message)
+                    return
+                }
+                alert(error.toString())
+            }
+        }
+
+        async function getTrademarks() {
+            try {
+                const res = await trademarkAPI.getAll()
+                setTrademarks(res.data)
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    alert(error.response.data.message)
+                    return
+                }
+                alert(error.toString())
+            }
+        }
+
+        getCategories()
+        getTrademarks()
+    }, [])
 
     function handleClose() {
         if (onClose)
@@ -41,30 +79,33 @@ function CreateProductModal(props) {
                         <Form.Control name="name" type="text" placeholder="Type product name" />
                     </Form.Group>
                     <Form.Group className="mb-3">
+                        <Form.Label>Price</Form.Label>
+                        <Form.Control name="price" type="number" min="1" placeholder="Type product price (VND)" />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control name="name" type="text" placeholder="Type product description" />
+                        <Form.Control name="description" type="text" placeholder="Type product description" />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Category</Form.Label>
+                        <Form.Select name="r_category" aria-label="Select Category">
+                            {
+                                categories.map(cate => (
+                                    <option key={cate._id} value={cate._id}>{cate.name}</option>
+                                ))
+                            }
+                        </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Image</Form.Label>
-                        <Form.Control name="img" type="file" accept=".png, .jpg, .jpeg" />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Danh mục sản phẩm</option>
-                            <option value="1">Giày nam</option>
-                            <option value="2">Giày nữ</option>
-                            <option value="3">Giày trẻ em</option>
-                        </select>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                    <Form.Group className="mb-3">
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Thương hiệu</option>
-                            <option value="1">Nike</option>
-                            <option value="2">Biti's</option>
-                            <option value="3">Adidafuk</option>
-                        </select>
-                    </Form.Group>
+                        <Form.Label>Trademark</Form.Label>
+                        <Form.Select name="r_trademark" aria-label="Select Trademark">
+                            {
+                                trademarks.map(trademark => (
+                                    <option key={trademark._id} value={trademark._id}>{trademark.name}</option>
+                                ))
+                            }
+                        </Form.Select>
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>

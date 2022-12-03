@@ -17,6 +17,7 @@ import UpdateCategoryModal from "../UpdateModal/UpdateCategoryModal";
 import { useEffect } from "react";
 import Loading from "../Loading/Loading";
 import axios from "axios";
+import DeleteCategoryModal from "../DeleteModal/DeleteCategoryModal";
 
 
 export default function CategoryTable() {
@@ -25,8 +26,9 @@ export default function CategoryTable() {
 
   const [isShowCreateForm, setIsShowCreateForm] = useState(false)
   const [isShowUpdateForm, setIsShowUpdateForm] = useState(false)
+  const [isShowDeleteForm, setIsShowDeleteForm] = useState(false)
 
-  const [updatingCategory, setUpdatingCategory] = useState({ name: "", img: null })
+  const [clickedElement, setClickedElement] = useState(null)
 
   const [errorCreatingMessage, setErrorCreatingMessage] = useState(null)
   const [errorUpdatingMessage, setErrorUpdatingMessage] = useState(null)
@@ -73,14 +75,34 @@ export default function CategoryTable() {
     setIsLoading(true)
     try {
       const formData = new FormData(form)
-      const res = await categoryAPI.update(updatingCategory._id, formData)
-      const newCategories = categories.filter(cate => cate._id !== updatingCategory._id)
+      const res = await categoryAPI.update(clickedElement._id, formData)
+      const newCategories = categories.filter(cate => cate._id !== clickedElement._id)
       newCategories.push(res.data)
       setCategories(newCategories)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorUpdatingMessage(error.response.data.message)
         setIsShowUpdateForm(true)
+        return
+      }
+      alert(error.toString())
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleDeleteCategory() {
+    setIsShowDeleteForm(false)
+    setIsLoading(true)
+    try {
+      await categoryAPI.delete(clickedElement._id)
+      const newCategories = categories.filter(cate => cate._id !== clickedElement._id)
+      setCategories(newCategories)
+      setClickedElement(null)
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error)
+        alert(error.response.data.message)
         return
       }
       alert(error.toString())
@@ -113,7 +135,6 @@ export default function CategoryTable() {
                   <TableCell>ID</TableCell>
                   <TableCell align="left">Name</TableCell>
                   <TableCell align="left">Image</TableCell>
-                  <TableCell align="left">Status</TableCell>
                   <TableCell align="left"></TableCell>
                 </TableRow>
               </TableHead>
@@ -129,15 +150,16 @@ export default function CategoryTable() {
                     </TableCell>
                     <TableCell align="left">{category.name}</TableCell>
                     <TableCell align="left"><img className="Table__img" src={`${window.env.CLOUDINARY_URL}${category.img}`} alt={`category`} /></TableCell>
-                    <TableCell align="left">
-                      <span className={`status ${category.active ? "active" : "inactive"}`}>{category.active ? "Còn hoạt động" : "ngừng hoạt động"}</span>
-                    </TableCell>
                     <TableCell align="left" className="Details">
                       <DetailsDropdown
-                        clickedCategory={category}
-                        setUpdatingCategory={(updatingCategory) => {
-                          setUpdatingCategory(updatingCategory)
+                        clickedElement={category}
+                        onUpdatingElementClick={(updatingCategory) => {
+                          setClickedElement(updatingCategory)
                           setIsShowUpdateForm(true)
+                        }}
+                        onDeletingElementClick={(deletingCategory) => {
+                          setClickedElement(deletingCategory)
+                          setIsShowDeleteForm(true)
                         }}
                       />
                     </TableCell>
@@ -158,8 +180,14 @@ export default function CategoryTable() {
           isShow={isShowUpdateForm}
           onClose={() => { setIsShowUpdateForm(false) }}
           onUpdateCategory={handleUpdateCategory}
-          updatingCategory={updatingCategory}
+          updatingCategory={clickedElement}
           errorMessage={errorUpdatingMessage}
+        />
+        <DeleteCategoryModal
+          isShow={isShowDeleteForm}
+          onClose={() => { setIsShowDeleteForm(false) }}
+          onDeleteCategory={handleDeleteCategory}
+          deletingCategory={clickedElement}
         />
       </>
   );

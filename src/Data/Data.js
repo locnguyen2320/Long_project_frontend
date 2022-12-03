@@ -28,3 +28,28 @@ export const SidebarData = [
 
 ];
 
+export const ProductDetailColors = [
+  "blue",
+  "brown",
+  "gray",
+  "green",
+  "orange",
+  "pink",
+  "red",
+  "black",
+  "white"
+]
+
+export const ProductDetailSizes = [
+  "35",
+  "36",
+  "37",
+  "38",
+  "39",
+  "40",
+  "41",
+  "42",
+  "43",
+  "44",
+  "45",
+]

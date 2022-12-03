@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { UilEllipsisH } from '@iconscout/react-unicons'
 
 function DetailsDropdown(props) {
-    const {clickedCategory, setUpdatingCategory} = props
+    const { clickedElement, onUpdatingElementClick, onDeletingElementClick, onDetailClick } = props
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -15,11 +15,24 @@ function DetailsDropdown(props) {
         setAnchorEl(null);
     };
 
-    function handleUpdateClick(){
+    function handleUpdateClick() {
         handleClose()
-        if(setUpdatingCategory)
-            setUpdatingCategory(clickedCategory)
+        if (onUpdatingElementClick)
+            onUpdatingElementClick(clickedElement)
     }
+
+    function handleDeleteClick() {
+        handleClose()
+        if (onDeletingElementClick)
+            onDeletingElementClick(clickedElement)
+    }
+
+    function handleDetailClick() {
+        handleClose()
+        if (onDetailClick)
+            onDetailClick(clickedElement)
+    }
+
 
     return (
         <div>
@@ -41,8 +54,9 @@ function DetailsDropdown(props) {
                     'aria-labelledby': 'basic-button',
                 }}
             >
+                {onDetailClick && <MenuItem onClick={handleDetailClick}>Details</MenuItem>}
                 <MenuItem onClick={handleUpdateClick}>Update</MenuItem>
-                <MenuItem onClick={handleClose}>Delete</MenuItem>
+                <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
             </Menu>
         </div>
     );

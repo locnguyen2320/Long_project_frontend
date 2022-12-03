@@ -17,7 +17,7 @@ function Login(props) {
             const formData = new FormData(e.target)
             const res = await userAPI.login(formData)
             dispatch(create({ token: res.data.signedToken, isRememberMe: formData.get("isRememberMe") }))
-            navigate("/category")
+            navigate("/dashboard")
         } catch (error) {
             alert(error.response.data.message)
         }

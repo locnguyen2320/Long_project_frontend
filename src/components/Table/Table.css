@@ -27,6 +27,7 @@ th {
 }
 
 .inactive {
+  background-color: 'rgb(145 254 159 / 47%)';
   color: red;
 }
 
