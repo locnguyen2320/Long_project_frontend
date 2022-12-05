@@ -16,6 +16,7 @@ import { productAPI } from "../../api/axios";
 import UpdateProductModal from "../UpdateModal/UpdateProductModal";
 import { useEffect } from "react";
 import Loading from "../Loading/Loading";
+import DeleteProductModal from"../DeleteModal/DeleteProductModal";
 import axios from "axios";
 import { numberWithCommas } from "../../utils/FormatPrice";
 import { Dropdown } from "react-bootstrap";
@@ -28,6 +29,7 @@ export default function ProductTable() {
 
   const [isShowCreateForm, setIsShowCreateForm] = useState(false)
   const [isShowUpdateForm, setIsShowUpdateForm] = useState(false)
+  const [isShowDeleteForm, setIsShowDeleteForm] = useState(false)
   const [isShowDetailModal, setIsShowDetailModal] = useState(false)
 
   const [clickedElement, setClickedElement] = useState(null)
@@ -109,6 +111,25 @@ export default function ProductTable() {
         return p
       })
     setProducts(newProducts)
+  }
+  async function handleDeleteProduct() {
+    setIsShowDeleteForm(false)
+    setIsLoading(true)
+    try {
+      await productAPI.delete(clickedElement._id)
+      const newProducts = products.filter(p => p._id !== clickedElement._id)
+      setProducts(newProducts)
+      setClickedElement(null)
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error)
+        alert(error.response.data.message)
+        return
+      }
+      alert(error.toString())
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -210,6 +231,12 @@ export default function ProductTable() {
           isShow={isShowDetailModal}
           product={clickedElement}
           onClose={() => { setIsShowDetailModal(false) }}
+        />
+        <DeleteProductModal
+          isShow={isShowDeleteForm}
+          onClose={() => { setIsShowDeleteForm(false) }}
+          onDeleteCategory={handleDeleteProduct}
+          deletingCategory={clickedElement}
         />
       </>
   );

@@ -101,8 +101,8 @@ function CreateProductModal(props) {
                         <Form.Label>Trademark</Form.Label>
                         <Form.Select name="r_trademark" aria-label="Select Trademark">
                             {
-                                trademarks.map(trdk => (
-                                    <option key={trdk._id} value={trdk._id}>{trdk.name}</option>
+                                trademarks.map(trademark => (
+                                    <option key={trademark._id} value={trademark._id}>{trademark.name}</option>
                                 ))
                             }
                         </Form.Select>
