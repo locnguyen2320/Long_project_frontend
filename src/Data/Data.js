@@ -2,6 +2,8 @@
 import {
   UilPackage,
   UilChart,
+  UilShop,
+  UilBag,
 } from "@iconscout/react-unicons";
 // Sidebar Data
 export const SidebarData = [
@@ -16,12 +18,12 @@ export const SidebarData = [
     to: "/categories"
   },
   {
-    icon: UilPackage,
+    icon: UilShop,
     heading: "Trademark",
     to: "/trademarks"
   },
   {
-    icon: UilPackage,
+    icon: UilBag,
     heading: "Product",
     to: "/products"
   },
