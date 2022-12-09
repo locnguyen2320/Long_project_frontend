@@ -50,6 +50,13 @@ const productDetailAPI = {
                 'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
             }
         }),
+        create: (formData) => axi.post(`/productDetail`,
+        formData,
+        {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+            }
+        }),
 }
 
 const trademarkAPI = {

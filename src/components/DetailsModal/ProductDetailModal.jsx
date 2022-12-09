@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Card, Button, Row, Col } from 'react-bootstrap';
 import UpdateProductDetailModal from '../UpdateModal/UpdateProductDetailModal';
+import CreateProductDetailModal from '../CreateModal/CreateProductDetailModal';
 import { productDetailAPI } from '../../api/axios'
 import axios from 'axios';
 import Loading from '../Loading/Loading';
@@ -16,14 +17,17 @@ ProductDetailModal.propTypes = {
 
 function ProductDetailModal(props) {
     const { isShow, onClose, product, onUpdatingProductDetail } = props
+    const [productdetails, setProductDetails] = useState([])
 
     const [isLoading, setIsLoading] = useState(false)
 
     const [clickedElement, setClickedElement] = useState(null)
 
     const [isShowUpdateForm, setIsShowUpdateForm] = useState(false)
+    const [isShowCreateForm, setIsShowCreateForm] = useState(false)
 
     const [errorUpdatingMessage, setErrorUpdatingMessage] = useState(null)
+    const [errorCreatingMessage, setErrorCreatingMessage] = useState(null)
 
     async function handleUpdateProductDetail(form) {
         setErrorUpdatingMessage(null)
@@ -46,6 +50,26 @@ function ProductDetailModal(props) {
         }
     }
 
+    async function handleCreateProductDetail(form) {
+        setErrorCreatingMessage(null)
+        setIsShowCreateForm(false)
+        setIsLoading(true)
+        try {
+          const formData = new FormData(form)
+          const res = await productDetailAPI.create(formData)
+          setProductDetails([...productdetails, res.data])
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            setErrorCreatingMessage(error.response.data.message)
+            setIsShowCreateForm(true)
+            return
+          }
+          alert(error.toString())
+        } finally {
+          setIsLoading(false)
+        }
+      }
+
     function handleClose() {
         if (onClose)
             onClose()
@@ -57,7 +81,7 @@ function ProductDetailModal(props) {
             <Modal size="xl" show={isShow} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{product.name}</Modal.Title>
-                    <Tooltip title="Create Product" onClick={() => { }}>
+                    <Tooltip title="Create Product Detail" onClick={() => {setIsShowCreateForm(true) }}>
                         <IconButton>
                             <UilPen />
                         </IconButton>
@@ -97,6 +121,13 @@ function ProductDetailModal(props) {
                 onUpdateProductDetail={handleUpdateProductDetail}
                 isShow={isShowUpdateForm}
                 onClose={() => { setIsShowUpdateForm(false) }}
+            />
+            <CreateProductDetailModal
+                creatingProductDetail={clickedElement}
+                errorMessage={errorCreatingMessage}
+                onCreateProductDetail={handleCreateProductDetail}
+                isShow={isShowCreateForm}
+                onClose={() => { setIsShowCreateForm(false) }}
             />
         </>
     );
