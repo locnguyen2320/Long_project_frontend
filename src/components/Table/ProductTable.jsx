@@ -36,6 +36,7 @@ export default function ProductTable() {
 
   const [errorCreatingMessage, setErrorCreatingMessage] = useState(null)
   const [errorUpdatingMessage, setErrorUpdatingMessage] = useState(null)
+  
 
   useEffect(() => {
     setIsLoading(true)
