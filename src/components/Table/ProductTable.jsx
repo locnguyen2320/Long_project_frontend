@@ -113,6 +113,19 @@ export default function ProductTable() {
       })
     setProducts(newProducts)
   }
+  function handleCreatingProductDetail(newProductDetail) {
+    const newProducts = products.map(
+      p => {
+        const newProductDetail = p.r_productDetails.id
+        if(p._id === newProductDetail.id){
+          newProductDetail = p
+          newProductDetail.r_productDetails.push(newProductDetail)
+          return newProducts
+        }
+        else
+        return p
+      })
+  }
   async function handleDeleteProduct() {
     setIsShowDeleteForm(false)
     setIsLoading(true)
@@ -229,6 +242,7 @@ export default function ProductTable() {
         />
         <ProductDetailModal
           onUpdatingProductDetail={handleUpdatingProductDetail}
+          onCreatingProductDetail={handleCreatingProductDetail}
           isShow={isShowDetailModal}
           product={clickedElement}
           onClose={() => { setIsShowDetailModal(false) }}

@@ -156,9 +156,6 @@ export default function ImportOderTable() {
                     </TableCell>
                     <TableCell align="left">{importoder.r_user.name}</TableCell>
                     <TableCell align="left">{numberWithCommas(importoder.totalPrice)}</TableCell>
-                    <TableCell align="left">{importoder.name}</TableCell>
-                    
-                    
                     <TableCell align="left">
                       {
                         <Dropdown>

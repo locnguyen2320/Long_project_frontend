@@ -51,6 +51,28 @@ function ProductDetailModal(props) {
     }
   }
 
+  async function handleCreateProductDetail(form) {
+    setErrorCreatingMessage(null);
+    setIsShowCreateForm(false);
+    setIsLoading(true);
+    try {
+      const formData = new FormData(form);
+      formData.append("r_product", product._id)
+      const res = await productDetailAPI.create(formData);
+      console.log(res.data);
+      
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrorCreatingMessage(error.response.data.message);
+        setIsShowCreateForm(true);
+        return;
+      }
+      alert(error.toString());
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   async function handleDeleteProductDetail() {
     setIsShowDeleteForm(false);
     setIsLoading(true);
@@ -65,26 +87,6 @@ function ProductDetailModal(props) {
       if (axios.isAxiosError(error)) {
         console.log(error);
         alert(error.response.data.message);
-        return;
-      }
-      alert(error.toString());
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleCreateProductDetail(form) {
-    setErrorCreatingMessage(null);
-    setIsShowCreateForm(false);
-    setIsLoading(true);
-    try {
-      const formData = new FormData(form);
-      const res = await productDetailAPI.create(formData);
-      setProductDetails([...productdetails, res.data]);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setErrorCreatingMessage(error.response.data.message);
-        setIsShowCreateForm(true);
         return;
       }
       alert(error.toString());
@@ -167,13 +169,10 @@ function ProductDetailModal(props) {
           }}
         />
         <CreateProductDetailModal
-          creatingProductDetail={clickedElement}
-          errorMessage={errorCreatingMessage}
-          onCreateProductDetail={handleCreateProductDetail}
           isShow={isShowCreateForm}
-          onClose={() => {
-            setIsShowCreateForm(false);
-          }}
+          onClose={() => { setIsShowCreateForm(false) }}
+          onCreateProductDetail={handleCreateProductDetail}
+          errorMessage={errorCreatingMessage}
         />
         <DeleteProductDetailModal
           isShow={isShowDeleteForm}

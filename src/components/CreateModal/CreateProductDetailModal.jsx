@@ -65,7 +65,7 @@ function CreateProductDetailModal(props) {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" type="submit">
-                        Thêm
+                        Save Changes
                     </Button>
                 </Modal.Footer>
             </Form>
