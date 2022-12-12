@@ -11,6 +11,7 @@ import { store } from './redux/store';
 import Main from './layouts/Main/Main';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
+import ImportOder from './pages/ImportOder';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
           {
             path: "products",
             element: <Product />
+          },
+          {
+            path: "importoders",
+            element: <ImportOder />
           },
           {
             path: "dashboard",

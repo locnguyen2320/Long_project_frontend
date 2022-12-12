@@ -7,7 +7,7 @@ import { ProductDetailSizes, ProductDetailColors } from "../../Data/Data";
 CreateProductDetailModal.propTypes = {
     isShow: PropTypes.bool,
     setIsShow: PropTypes.func,
-    onCreateProductDetail: PropTypes.func,
+    onCreateProduct: PropTypes.func,
 };
 
 function CreateProductDetailModal(props) {
@@ -19,7 +19,7 @@ function CreateProductDetailModal(props) {
             onClose()
     }
 
-    function handleCreateProductDetail(e) {
+    function handleCreateProduct(e) {
         e.preventDefault()
         if (onCreateProductDetail)
             onCreateProductDetail(e.target)
@@ -34,7 +34,7 @@ function CreateProductDetailModal(props) {
                 errorMessage.split("---").map((err, index) => <Alert key={index} severity="error">{err}</Alert>) :
                 <></>
             }
-            <Form onSubmit={handleCreateProductDetail} encType="multipart/form-data">
+            <Form onSubmit={handleCreateProduct} encType="multipart/form-data">
                 <Modal.Body>
                     <Form.Group className="mb-3">
                         <Form.Label>Size</Form.Label>
@@ -62,14 +62,10 @@ function CreateProductDetailModal(props) {
                         <Form.Label>Image</Form.Label>
                         <Form.Control name="img" type="file" accept=".png, .jpg, .jpeg" />
                     </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Số Lượng</Form.Label>
-                        <Form.Control name="name" type="text" placeholder="Type quantity" />
-                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" type="submit">
-                        Save Changes
+                        Thêm
                     </Button>
                 </Modal.Footer>
             </Form>

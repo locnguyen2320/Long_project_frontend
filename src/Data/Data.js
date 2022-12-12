@@ -27,6 +27,11 @@ export const SidebarData = [
     heading: "Product",
     to: "/products"
   },
+  {
+    icon: UilPackage,
+    heading: "ImportOder",
+    to: "/importoders"
+  },
 
 ];
 

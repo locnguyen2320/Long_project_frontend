@@ -89,5 +89,41 @@ const userAPI = {
         })
 }
 
+const importoderAPI = {
+    getAll: () => axi.get(`/importoder`),
+    create: (formData) => axi.post(`/importoder`,
+        formData,
+        {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+            }
+        }),
+    update: (id, formData) => axi.put(`/importoder/${id}`,
+        formData,
+        {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+            }
+        }),
+}
 
-export { categoryAPI, productAPI, trademarkAPI, userAPI, productDetailAPI };
+const importoderDetailAPI = {
+    update: (id, formData) => axi.put(`/importoderDetail/${id}`,
+        formData,
+        {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+            }
+        }),
+    create: (formData) => axi.post(`/importoderDetail`,
+        formData,
+        {
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
+            }
+        }),
+    delete: (id) => axi.delete(`/importoderdetail/${id}`),
+}
+
+
+export { categoryAPI, productAPI, trademarkAPI, userAPI, productDetailAPI, importoderAPI, importoderDetailAPI };
