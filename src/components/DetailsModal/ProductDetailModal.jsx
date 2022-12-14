@@ -17,7 +17,7 @@ ProductDetailModal.propTypes = {
 };
 
 function ProductDetailModal(props) {
-  const { isShow, onClose, product, onUpdatingProductDetail } = props;
+  const { isShow, onClose, product, onUpdatingProductDetail, onCreatingProductDetail } = props;
   const [productdetails, setProductDetails] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -59,8 +59,9 @@ function ProductDetailModal(props) {
       const formData = new FormData(form);
       formData.append("r_product", product._id)
       const res = await productDetailAPI.create(formData);
-      console.log(res.data);
-      
+      if (onCreatingProductDetail) 
+        onCreatingProductDetail(res.data[0]);
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorCreatingMessage(error.response.data.message);

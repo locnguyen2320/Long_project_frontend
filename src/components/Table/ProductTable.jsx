@@ -113,19 +113,22 @@ export default function ProductTable() {
       })
     setProducts(newProducts)
   }
-  function handleCreatingProductDetail(newProductDetail) {
+
+  function handleCreatingProductDetail(createdProductDetail) {
     const newProducts = products.map(
       p => {
-        const newProductDetail = p.r_productDetails.id
-        if(p._id === newProductDetail.id){
-          newProductDetail = p
-          newProductDetail.r_productDetails.push(newProductDetail)
-          return newProducts
+        console.log(createdProductDetail)
+        if(p._id === createdProductDetail.r_product){
+          const details = [...p.r_productDetails,createdProductDetail]
+          const newProduct = ({...p,r_productDetails: details})
+          setClickedElement(newProduct)
+          return newProduct
         }
-        else
         return p
       })
+      setProducts(newProducts)
   }
+
   async function handleDeleteProduct() {
     setIsShowDeleteForm(false)
     setIsLoading(true)
@@ -170,7 +173,7 @@ export default function ProductTable() {
                   <TableCell>ID</TableCell>
                   <TableCell align="left">Name</TableCell>
                   <TableCell align="left">Price</TableCell>
-                  <TableCell align="left">description</TableCell>
+                  <TableCell align="left">Description</TableCell>
                   <TableCell align="left">Category</TableCell>
                   <TableCell align="left">Trademark</TableCell>
                   <TableCell align="left">Color-Size</TableCell>
@@ -189,7 +192,7 @@ export default function ProductTable() {
                     </TableCell>
                     <TableCell align="left">{product.name}</TableCell>
                     <TableCell align="left">{numberWithCommas(product.price)}</TableCell>
-                    <TableCell align="left">{product.name}</TableCell>
+                    <TableCell align="left">{product.description}</TableCell>
                     <TableCell align="left">{product.r_category.name}</TableCell>
                     <TableCell align="left">{product.r_trademark.name}</TableCell>
                     <TableCell align="left">
@@ -213,6 +216,10 @@ export default function ProductTable() {
                         onDetailClick={(product) => {
                           setClickedElement(product)
                           setIsShowDetailModal(true)
+                        }}
+                        onUpdatingElementClick={(updatingProduct) => {
+                        setClickedElement(updatingProduct)
+                        setIsShowUpdateForm(true)
                         }}
                         setUpdatingElement={(updatingProduct) => {
                           setClickedElement(updatingProduct)
@@ -250,8 +257,8 @@ export default function ProductTable() {
         <DeleteProductModal
           isShow={isShowDeleteForm}
           onClose={() => { setIsShowDeleteForm(false) }}
-          onDeleteCategory={handleDeleteProduct}
-          deletingCategory={clickedElement}
+          onDeleteProduct={handleDeleteProduct}
+          deletingProduct={clickedElement}
         />
       </>
   );
