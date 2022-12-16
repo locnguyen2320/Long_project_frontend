@@ -117,7 +117,6 @@ export default function ProductTable() {
   function handleCreatingProductDetail(createdProductDetail) {
     const newProducts = products.map(
       p => {
-        console.log(createdProductDetail)
         if(p._id === createdProductDetail.r_product){
           const details = [...p.r_productDetails,createdProductDetail]
           const newProduct = ({...p,r_productDetails: details})
@@ -224,6 +223,10 @@ export default function ProductTable() {
                         setUpdatingElement={(updatingProduct) => {
                           setClickedElement(updatingProduct)
                           setIsShowUpdateForm(true)
+                        }}
+                        onDeletingElementClick={(deletingProduct) => {
+                          setClickedElement(deletingProduct)
+                          setIsShowDeleteForm(true)
                         }}
                       />
                     </TableCell>
